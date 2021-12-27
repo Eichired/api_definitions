@@ -1,0 +1,425 @@
+swagger: "2.0"
+info:
+  description: "Тестовый API для учебного книжного магазина"
+  version: "1.0.0"
+  title: "Swagger Squirrelbookshop"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "squirrel@squirrelbookshop.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "squirrelbookshop.com"
+basePath: "/v2"
+schemes:
+- "https"
+paths:
+  /find_books:
+    get:
+      tags:
+      - "books"
+      summary: "search a book(s)"
+      description: "Поиск книг по заданным параметрам"
+      operationId: "getBooksList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "title"
+        in: "query"
+        description: "Название книги"
+        required: false
+        type: "string"
+      - name: "author"
+        in: "query"
+        description: "Автор"
+        required: false
+        type: "string"
+      - name: "isbn"
+        in: "query"
+        description: "ISBN"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Books"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /create_book:
+    put:
+      tags:
+      - "books"
+      summary: "create a book"
+      description: "Создание книги по заданным параметрам"
+      operationId: "createBooksList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Написать про книжки"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateBook"
+      responses:
+        "200":
+          description: "Successful"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /get_card_info:
+    get:
+      tags:
+      - "books"
+      summary: "Get book information"
+      description: "Выведение подробной информации о позиции"
+      operationId: "getBookinfo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_catalog"
+        in: "query"
+        description: "ID книги"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful"
+          schema:
+              $ref: "#/definitions/GetCardInfoResp"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /delayorder_book:
+    post:
+      tags:
+      - "books"
+      summary: "create a delay order"
+      description: "Создание заявки на отсутствующую позицию"
+      operationId: "createDelayOrderList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_catalog"
+        in: "query"
+        description: "Идентификатор книги"
+        required: false
+        type: "integer"
+      - name: "ISBN"
+        in: "query"
+        description: "ISBN книги"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Successful"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /create_review:
+    post:
+      tags:
+      - "books"
+      summary: "create a review"
+      description: "Добавление рецензии к книге"
+      operationId: "createReviewList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Написать рецензию о книге"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateReview"
+      responses:
+        "200":
+          description: "Successful"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /delete_book:
+    delete:
+      tags:
+      - "books"
+      summary: "delete a book"
+      description: "Удаление номенклатурной позиции"
+      operationId: "deleteBook"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_catalog"
+        in: "query"
+        description: "Идентификатор книги"
+        required: false
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /create_order:
+    post:
+      tags:
+      - "order"
+      summary: "create a order"
+      description: "Формирование заказа"
+      operationId: "createOrderList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_customer"
+        in: "query"
+        description: "ID пользователя"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Сформировать заказ"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/CreateOrder"
+      responses:
+        "200":
+          description: "Successful"
+          schema:
+              $ref: "#/definitions/CreateOrderResp"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /checkout_books:
+    get:
+      tags:
+      - "order"
+      summary: "schecking availability of choosen books"
+      description: "Проверка наличия на складе книг из заказа"
+      operationId: "getOrderList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_order"
+        in: "query"
+        description: "ID заказа"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Запрос наличия на складе книг из заказа"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/CheckoutOrder"
+      responses:
+        "200":
+          description: "Successful"
+          schema:
+              $ref: "#/definitions/CheckoutOrderResp"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+  /order_confirmation:
+    post:
+      tags:
+      - "order"
+      summary: "create a order"
+      description: "Формирование заказа"
+      operationId: "confirmOrderList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id_order"
+        in: "query"
+        description: "ID заказа"
+        required: true
+        type: "integer"
+      - name: "pay_type"
+        in: "query"
+        description: "Способ оплаты"
+        required: true
+        type: "boolean"
+      - name: "gift_packaging"
+        in: "query"
+        description: "Подарочная упаковка"
+        required: false
+        type: "boolean"
+      responses:
+        "200":
+          description: "Successful"
+          schema:
+              $ref: "#/definitions/CreateOrderResp"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+      security:
+        - api_key: []
+
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+
+definitions:
+  Books:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      author:
+        type: "string"
+      isbn:
+        type: "string"
+  GetCardInfoResp:
+    type: "object"
+    properties:
+      author:
+        type: "string"
+      title:
+        type: "string"
+      quantity:
+        type: "integer"
+      price:
+        type: "integer"
+      review:
+        type: "string"
+  CreateBook:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      author:
+        type: "string"
+      isbn:
+        type: "string"
+  CreateReview:
+    type: "object"
+    properties:
+      id_catalog:
+        type: "integer"
+      id_customer:
+        type: "integer"
+      review:
+        type: "string"
+  CreateOrder:
+    type: "object"
+    properties:
+      id_catalog:
+        type: "integer"
+      quantity:
+        type: "integer"
+  CreateOrderResp:
+    type: "object"
+    properties:
+      id_order:
+        type: "integer"
+  CheckoutOrder:
+    type: "object"
+    properties:
+      id_catalog:
+        type: "integer"
+  CheckoutOrderResp:
+    type: "object"
+    properties:
+      id_order:
+        type: "integer"
+      id_catalog:
+        type: "integer"
+      quantity:
+        type: "integer"
+
+
